@@ -1,14 +1,16 @@
 'use strict';
 
 angular.module('notes')
-    .directive('noteShare', ['Authentication', '$location', function (MAIN_PANEL_STATE) {
+    .directive('noteShare', ['Authentication', '$location', 'MAIN_PANEL_STATE', function (Authentication,
+                                                                                          $location,
+                                                                                          MAIN_PANEL_STATE) {
         return {
             templateUrl: 'modules/notes/views/notes.renderer.view.html',
             scope: {},
             link: function (scope) {
                 scope.viewModel = {};
-                scope.viewModel.mainPanelState = MAIN_PANEL_STATE.COURSE_NOTES;
-
+                scope.viewModel.mainPanelState = MAIN_PANEL_STATE.COURSE_OUTLINE;
+                console.log(scope.viewModel.mainPanelState);
                 scope.toggleView = function() {
                     if (scope.viewModel.mainPanelState === MAIN_PANEL_STATE.COURSE_NOTES) {
                         scope.viewModel.mainPanelState = MAIN_PANEL_STATE.COURSE_OUTLINE;
@@ -18,10 +20,9 @@ angular.module('notes')
                     }
                 };
             },
-            controller: function($scope, Authentication, $location) {
+            controller: function($scope) {
                 // This provides Authentication context.
                 $scope.authentication = Authentication;
-
                 // If user is not signed in then redirect to sign in page
                 if (!$scope.authentication.user) $location.path('/signin');
             }
