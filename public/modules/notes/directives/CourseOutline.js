@@ -1,12 +1,16 @@
 'use strict';
 
 angular.module('notes')
-    .directive('courseOutline', function () {
+    .directive('courseOutline', function ($rootScope) {
         return {
-            templateUrl: 'modules/notes/views/course.outline.client.view.html',
             scope: {
+                displayedCourse: '=course'
             },
-            link: function () {
+            templateUrl: 'modules/notes/views/course.outline.client.view.html',
+            link: function (scope) {
+                scope.addCourse = function () {
+                    $rootScope.$broadcast('add-course', {course: scope.displayedCourse});
+                };
             }
         };
     });

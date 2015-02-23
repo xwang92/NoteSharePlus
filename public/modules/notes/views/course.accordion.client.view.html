@@ -1,3 +1,5 @@
-<div>
-    inside left accordion
-</div>
+<accordion>
+    <accordion-group heading="{{course.title}}" ng-repeat="course in courses">
+        {{course.content}}
+    </accordion-group>
+</accordion>

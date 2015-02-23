@@ -9,8 +9,9 @@ angular.module('notes')
             scope: {},
             link: function (scope) {
                 scope.viewModel = {};
-                scope.viewModel.mainPanelState = MAIN_PANEL_STATE.COURSE_OUTLINE;
-                console.log(scope.viewModel.mainPanelState);
+                scope.viewModel.selectedCourse= null;
+                scope.viewModel.mainPanelState = MAIN_PANEL_STATE.COURSE_NOTES;
+                scope.course = null;
                 scope.toggleView = function() {
                     if (scope.viewModel.mainPanelState === MAIN_PANEL_STATE.COURSE_NOTES) {
                         scope.viewModel.mainPanelState = MAIN_PANEL_STATE.COURSE_OUTLINE;
@@ -19,7 +20,19 @@ angular.module('notes')
                         scope.viewModel.mainPanelState = MAIN_PANEL_STATE.COURSE_NOTES;
                     }
                 };
+                scope.availableCourses = [
+                    {
+                        title: 'Course 1',
+                        content: 'Course 1 content'
+                    }
+                ];
+
+                scope.viewCourse = function() {
+                    scope.course = scope.viewModel.selectedCourse;
+                    scope.viewModel.mainPanelState = MAIN_PANEL_STATE.COURSE_OUTLINE;
+                };
             },
+
             controller: function($scope) {
                 // This provides Authentication context.
                 $scope.authentication = Authentication;
