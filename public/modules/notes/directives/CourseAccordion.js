@@ -19,7 +19,7 @@ angular.module('notes')
 
                 scope.$on('add-course', function(event, args){
                     scope.courses.push(args.course);
-                })
+                });
             }
         };
     });
