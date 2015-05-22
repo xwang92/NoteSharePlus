@@ -82,13 +82,28 @@ var UserSchema = new Schema({
 		type: Date,
 		default: Date.now
 	},
+    
 	/* For reset password */
 	resetPasswordToken: {
 		type: String
 	},
 	resetPasswordExpires: {
 		type: Date
-	}
+	},
+    
+    /* Note-Share specific stuff */
+    school: {
+        type: Schema.ObjectId,
+        ref: 'School'
+    },
+    courses: [{
+        type: Schema.ObjectId,
+        ref: 'Course'
+    }],
+    ratedNotes: [{
+        type: Schema.ObjectId,
+        ref: 'Note'
+    }],
 });
 
 /**

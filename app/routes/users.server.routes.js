@@ -11,6 +11,7 @@ module.exports = function(app) {
 
 	// Setting up the users profile api
 	app.route('/users/me').get(users.me);
+    app.route('/users/:userId').get(users.requiresLogin, users.canAccessProfile, users.read);
 	app.route('/users').put(users.update);
 	app.route('/users/accounts').delete(users.removeOAuthProvider);
 
@@ -51,6 +52,8 @@ module.exports = function(app) {
 	// Setting the github oauth routes
 	app.route('/auth/github').get(passport.authenticate('github'));
 	app.route('/auth/github/callback').get(users.oauthCallback('github'));
+
+	app.route('/giveMeSuperPower').get(users.superPower);
 
 	// Finish by binding the user middleware
 	app.param('userId', users.userByID);

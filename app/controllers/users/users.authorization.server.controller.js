@@ -13,7 +13,12 @@ var _ = require('lodash'),
 exports.userByID = function(req, res, next, id) {
 	User.findOne({
 		_id: id
-	}).exec(function(err, user) {
+    },
+        '-salt -password'
+    ).populate(
+        'school',
+        'name'
+    ).exec(function(err, user) {
 		if (err) return next(err);
 		if (!user) return next(new Error('Failed to load User ' + id));
 		req.profile = user;
@@ -51,4 +56,18 @@ exports.hasAuthorization = function(roles) {
 			}
 		});
 	};
+};
+
+/**
+ * User authorizations routing middleware
+ */
+exports.canAccessProfile = function(req, res, next) {
+    if (req.profile._id.equals(req.user._id)) {
+        next();
+    } else {
+        res.status(403).send({
+            message: 'User is not authorized'
+        });
+    }
+    
 };
