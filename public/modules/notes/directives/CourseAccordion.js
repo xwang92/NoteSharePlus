@@ -6,14 +6,29 @@ angular.module('notes')
             templateUrl: 'modules/notes/views/course.accordion.client.view.html',
             scope: {},
             link: function (scope) {
+                // Load courses from user from db into scope.course
                 scope.courses = [
                     {
-                        title: 'ZUBAIR101',
-                        content: 'ZubairBOMB'
+                        'title': 'ZUBAIR101',
+                        'notes': [
+                            {
+                                'noteNum': 'note 1'
+                            },
+                            {
+                                'noteNum': 'note 2'
+                            },
+                            {
+                                'noteNum': 'note 3'
+                            }
+                        ]
                     },
                     {
-                        title: 'PEE TER 101',
-                        content: 'pee tear griffin'
+                        'title': 'PEE TER 101',
+                        'notes': [
+                            {
+                                'noteNum': 'note 1'
+                            }
+                        ]
                     }
                 ];
 

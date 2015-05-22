@@ -12,6 +12,22 @@ angular.module('notes')
                 scope.viewModel.selectedCourse= null;
                 scope.viewModel.mainPanelState = MAIN_PANEL_STATE.COURSE_NOTES;
                 scope.course = null;
+                scope.availableCourses = [
+                    {
+                        title: 'Course 1',
+                        content: 'Course 1 content'
+                    },
+                    {
+                        title: 'Course 2',
+                        content: 'Course 2 content'
+                    },
+                    {
+                        title: 'Course 3',
+                        content: 'Course 3 content'
+                    },
+                ];
+
+                // Function to toggle between different views of the right panel
                 scope.toggleView = function() {
                     if (scope.viewModel.mainPanelState === MAIN_PANEL_STATE.COURSE_NOTES) {
                         scope.viewModel.mainPanelState = MAIN_PANEL_STATE.COURSE_OUTLINE;
@@ -20,19 +36,13 @@ angular.module('notes')
                         scope.viewModel.mainPanelState = MAIN_PANEL_STATE.COURSE_NOTES;
                     }
                 };
-                scope.availableCourses = [
-                    {
-                        title: 'Course 1',
-                        content: 'Course 1 content'
-                    }
-                ];
 
+                // Function to view the selected course
                 scope.viewCourse = function() {
                     scope.course = scope.viewModel.selectedCourse;
                     scope.viewModel.mainPanelState = MAIN_PANEL_STATE.COURSE_OUTLINE;
                 };
             },
-
             controller: function($scope) {
                 // This provides Authentication context.
                 $scope.authentication = Authentication;
