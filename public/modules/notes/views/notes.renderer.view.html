@@ -1,9 +1,11 @@
 <div>
-    <input type="text" data-ng-model="viewModel.selectedCourse" data-typeahead="course as course.title for course in availableCourses | filter:$viewValue | limitTo:8"
-           class="form-control" data-typeahead-editable="false">
-    <button type="button" data-ng-click="viewCourse()">
-        View Course
-    </button>
+    <div class="search">
+        <input type="text" data-ng-model="viewModel.selectedCourse" data-typeahead="course as course.title for course in availableCourses | filter:$viewValue | limitTo:8"
+               class="form-control" data-typeahead-editable="false">
+        <button type="button" data-ng-click="viewCourse()">
+            View Course
+        </button>
+    </div>
     <div class="course_accordion" data-course-accordion data-course="course"></div>
     <div class="main_panel" data-ng-switch on="viewModel.mainPanelState">
         <div class="course_outline_panel" data-ng-switch-when="courseOutline" data-course-outline data-course="course"></div>
