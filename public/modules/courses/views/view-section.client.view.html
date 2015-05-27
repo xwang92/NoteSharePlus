@@ -1,0 +1,6 @@
+<div class="section_outline" data-ng-controller="SectionsController">
+	section view
+	<div ng-repeat="lecture in availiableLectures">
+		<a ui-sref="lecture({ courseCode: courseCode, sectionNum: sectionNum, lectureNum: lecture.number })">lecture {{lecture.number}}</a>
+	</div>
+</div>
