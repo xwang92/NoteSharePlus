@@ -1,0 +1,7 @@
+<div class="course_accordion" data-ng-controller="CourseAccordionController" data-course="course">
+    <div class"course_list" ng-repeat="course in courses">
+    	<a ui-sref="course({ courseCode: course.code })">
+            {{course.code}}
+    	</a>
+    </div>
+</div>
