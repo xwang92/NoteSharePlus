@@ -50,7 +50,46 @@ exports.update = function(req, res) {
 
 /**
  * Send User
+ *
+ * @param req.user the current user.
  */
 exports.me = function(req, res) {
 	res.json(req.user || null);
+};
+
+/**
+ * Send profile
+ *
+ * @param req.profile the profile object to send back
+ */
+exports.read = function(req, res) {
+    res.json(req.profile || null);
+};
+
+/**
+ * Register the current user to a school
+ *
+ * @param req.user the current user
+ * @param req.school the school object
+ */
+exports.registerSchool = function(req, res) {
+    var user = req.user;
+    var school = req.school;
+    user.school = mongoose.Types.ObjectId(school._id);
+    
+    user.save(function(err) {
+        if (err) {
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            });
+        } else {
+            req.login(user, function(err) {
+                if (err) {
+                    res.status(400).send(err);
+                } else {
+                    res.json(user);
+                }
+            });
+        }
+    });
 };
