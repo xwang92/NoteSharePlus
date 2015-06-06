@@ -20,11 +20,14 @@ var _ = require('lodash'),
  * @param req.query.author the ID of an user, requested by the user
  */
 exports.fromUser = function(req, res, next) {
-    var authorId = req.query.author;
-    var query = {};
-    console.log("author ID: " + authorId);
-    query.author = mongoose.Types.ObjectId(authorId);
-    if (authorId) {
+
+    if (req.query.author) {
+
+        var authorId = req.query.author;
+        var query = {};
+        console.log("author ID: " + authorId);
+        query.author = mongoose.Types.ObjectId(authorId);
+
         Note.find(query).populate('author').populate('course').exec(function(err, note) {
             if (err) return next(err);
             if (!note) return next(new Error('Failed to load note with id ' + authorId));
@@ -41,11 +44,14 @@ exports.fromUser = function(req, res, next) {
  * @param req.user.course the ID of a course, requested by the user
  */
 exports.fromSection = function(req, res, next) {
-    var sectionId = req.query.section;
-    var query = {};
-    console.log("section ID: " + sectionId);
-    query.section = mongoose.Types.ObjectId(sectionId);
-    if (sectionId) {
+
+    if (req.query.section) {
+
+        var sectionId = req.query.section;
+        var query = {};
+        console.log("section ID: " + sectionId);
+        query.section = mongoose.Types.ObjectId(sectionId);
+
         Note.find(query).populate('section').populate('author').exec(function(err, note) {
             if (err) return next(err);
             if (!note) return next(new Error('Failed to load note with id ' + sectionId));

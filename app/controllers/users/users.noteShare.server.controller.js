@@ -9,6 +9,40 @@ var _ = require('lodash'),
 	passport = require('passport'),
 	User = mongoose.model('User');
 
+/////////////////////////////////////////////
+//                                         //
+//          Note Share Schools             //
+//                                         //
+/////////////////////////////////////////////
+
+/**
+ * Register the current user to a school
+ *
+ * @param req.user the current user
+ * @param req.school the school object
+ */
+exports.registerSchool = function(req, res) {
+    var user = req.user;
+    var school = req.school;
+    user.school = mongoose.Types.ObjectId(school._id);
+
+    user.save(function(err) {
+        if (err) {
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            });
+        } else {
+            req.login(user, function(err) {
+                if (err) {
+                    res.status(400).send(err);
+                } else {
+                    res.json(user);
+                }
+            });
+        }
+    });
+};
+
 /**
  * Signup
  */
@@ -83,7 +117,7 @@ exports.isAdmin = function(req, res, next){
     }
     else{
       return res.status(401).send({
-          message: errorHandler.getErrorMessage(err)
+          message: 'User does not have access'
       });
     }
 };

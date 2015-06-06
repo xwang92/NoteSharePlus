@@ -14,7 +14,8 @@ module.exports = function(app) {
 
     app.route('/schools/:schoolId')
         .get(schools.read)
-        .put(users.requiresLogin, schools.hasAuthorization, users.registerSchool);
+        .put(users.requiresLogin, schools.hasAuthorization, users.registerSchool)
+        .delete(users.isAdmin, schools.remove);
 
     // School middleware
     app.param('schoolId', schools.schoolById);
