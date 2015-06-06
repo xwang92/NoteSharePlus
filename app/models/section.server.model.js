@@ -13,10 +13,13 @@ var SectionSchema = new Schema({
         required: 'section year cannot be blank'
     },
     term:{
-        type: [{
+        /*type: [{
 			type: String,
-			enum: ['Winter', 'Fall']
-		}],
+			enum: ['Winter', 'Fall'],
+			required: 'Need to have a name for term'
+		}],*/
+		type: String,
+        enum: ['Winter', 'Fall'],
         required: 'section term cannot be blank'
     },
     section: {

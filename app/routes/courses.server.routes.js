@@ -11,12 +11,9 @@ var users = require('../../app/controllers/users.server.controller'),
 module.exports = function(app) {
     // Course Routes
     app.route('/courses')
-        .get(users.requiresLogin, courses.listBySchool)
+        .get(courses.listByCode, courses.listBySchool)
         // TODO: used for testing. Course to be added via scraper
         .post(users.isAdmin, courses.create);
-
-    app.route('/courses/code')
-        .get(users.requiresLogin, courses.listByCode);
 
     app.route('/courses/user')
         .get(users.requiresLogin, courses.getUserCourses);
@@ -26,7 +23,8 @@ module.exports = function(app) {
         .delete(users.requiresLogin, courses.hasAuthorization, courses.removeFromUser);
 
     app.route('/courses/:courseId')
-        .get(users.requiresLogin, courses.hasAuthorization, courses.read);
+        .get(courses.read)
+        .delete(users.isAdmin, courses.remove);
 
     app.route('/courses/update/:schoolId')
         .get(users.isAdmin, uoftapi.addCourses);

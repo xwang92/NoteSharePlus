@@ -8,19 +8,15 @@ var users = require('../../app/controllers/users.server.controller'),
     sections = require('../../app/controllers/section.server.controller');
 
 module.exports = function(app) {
-    // Course Routes
-    app.route('/sections/fromCourse/:courseId')
-        .get(users.requiresLogin, courses.hasAuthorization, sections.listByCourse);
 
     app.route('/sections')
+        .get(sections.listByCourse)
         .post(users.isAdmin, sections.create);
 
     app.route('/sections/:sectionId')
-        .get(users.requiresLogin, sections.read)
-        //.put(users.requiresLogin, sections.updateSection)
+        .get(sections.read)
         .delete(users.isAdmin, sections.deleteSection);
 
     app.param('sectionId', sections.sectionById);
     app.param('courseId', courses.courseById);
-
 };
