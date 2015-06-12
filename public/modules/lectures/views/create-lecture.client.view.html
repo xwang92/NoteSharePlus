@@ -1,0 +1,23 @@
+<div class="lecture" data-ng-controller="LecturesController">
+    <div class="page-header">
+        <h1>New Lecture</h1>
+    </div>
+    Name <input type="text" data-ng-model="name">
+    Note Type <input type="text" data-ng-model="noteType">
+    File Type <input type="text" data-ng-model="fileType">
+    Date <input type="text" data-ng-model="date">
+
+    <button type="button" data-ng-click="createNote()">
+        Upload Note
+    </button>
+    {{5+5}}
+    {{currentUpload}}
+    {{response}}
+    <br>
+    <input type="file" data-ng-model="myFile" multiple/>
+    <button type="button" data-ng-click="uploadImage()">
+        Upload
+    </button>
+    <br>
+    {{myFile}}
+</div>

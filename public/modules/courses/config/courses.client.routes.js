@@ -6,11 +6,11 @@ angular.module('courses').config(['$stateProvider',
 		// Course state routing
 		$stateProvider.
 		state('course', {
-			url: '/course/:courseCode',
+			url: '/course/:courseId',
 			templateUrl: 'modules/courses/views/view-course.client.view.html'
 		}).
 		state('course.section', {
-			url: '/section/:sectionNum',
+			url: '/section/:sectionId',
 			templateUrl: 'modules/courses/views/view-section.client.view.html'
 		});
 	}

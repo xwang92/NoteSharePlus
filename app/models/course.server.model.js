@@ -25,10 +25,7 @@ var CourseSchema = new Schema({
         ref: 'School',
         required: 'School cannot be blank'
     },
-    sections: [{
-        type: Schema.ObjectId,
-        ref: 'Section'
-    }]
+    sections: [{}]
 
 });
 

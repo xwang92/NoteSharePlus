@@ -1,3 +1,14 @@
-<div class="lecture">
-	lecture view
-</div>	
+<div class="lecture" data-ng-controller="LecturesController" data-ng-init="init()">
+	Lecutre Info {{lecture}}
+    <br>
+    Add Tag <input type="text" data-ng-model="tagName">
+    <button type="button" data-ng-click="addTag()">
+        Add
+    </button>
+    <br>
+    Remove Tag <input type="text" data-ng-model="tagName">
+    <button type="button" data-ng-click="removeTag()">
+        Remove
+    </button>
+
+</div>

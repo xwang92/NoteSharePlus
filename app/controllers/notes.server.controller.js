@@ -104,14 +104,14 @@ exports.create = function(req, res) {
     var note = new Note(req.body);
     note.author = req.user._id;
 
+    console.log(note);
+
     Section.findById(note.section).exec(function(err, section) {
         if (err) return res.status(400).send();
         if (!section) return res.status(400).send({
             message: 'section not found'
         });
     });
-
-    console.log(note);
 
     note.save(function(err) {
         if (err) {
@@ -124,7 +124,7 @@ exports.create = function(req, res) {
                 if (!section) return res.status(400).send({
                     message: 'section not found'
                 });
-                section.notes.push(note._id);
+                section.notes.push(note);
                 section.save(function(err) {
                     if (err) {
                         return res.status(400).send({
@@ -438,6 +438,7 @@ exports.removeTags = function(req, res) {
     var newTags = req.body.tags;
     newTags = _.difference(note.tags, [newTags]);
     note.tags = newTags;
+
     note.save(function(err) {
         if (err) {
             return res.status(400).send({
@@ -460,8 +461,6 @@ exports.addTags = function(req, res) {
     var newTags = req.body.tags;
     newTags = _.union( [newTags] , note.tags );
     note.tags = newTags;
-
-    console.log(newTags);
 
     note.save(function(err) {
         if (err) {

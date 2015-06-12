@@ -61,6 +61,6 @@ var NoteSchema = new Schema({
     }
 });
 
-NoteSchema.index({noteType: 1, date: 1, name: 1}, {unique: true});
+NoteSchema.index({noteType: 1, date: 1, name: 1, section: 1}, {unique: true});
 
 mongoose.model('Note', NoteSchema);

@@ -1,9 +1,9 @@
-<div class="course_outline" data-ng-controller="CoursesController">
-    {{courseCode}}
+<div class="course_outline" data-ng-controller="CoursesController" data-ng-init="init()">
+    Course Code: {{course.code}}
     <button type="button" data-ng-click="addCourse()"> Add Course </button>
-	<div ng-repeat="section in availiableSections">
-		<a ui-sref="course.section({ courseCode: courseCode, sectionNum: section.section })" data-ng-model="viewModel.selectedCourse">
-			section {{section.section}}
+	<div ng-repeat="section in course.sections">
+		<a ui-sref="course.section({ courseId: courseId, sectionId: section._id })" data-ng-model="viewModel.selectedCourse">
+			{{section.year}}  {{section.term}}  {{section.section}}
 		</a>
 	</div>
     <div data-ui-view></div>

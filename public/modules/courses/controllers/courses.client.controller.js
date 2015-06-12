@@ -1,7 +1,14 @@
 'use strict';
 
-angular.module('courses').controller('CoursesController', ['$scope', '$rootScope', '$state',
-	function($scope, $rootScope, $state) {
+angular.module('courses').controller('CoursesController', ['$scope', '$rootScope', '$state', 'Courses',
+	function($scope, $rootScope, $state, Courses) {
+
+	    $scope.init = function(){
+            $scope.course = Courses.get({
+                courseId: $state.params.courseId
+            });
+	    };
+
 		$scope.selectedSection = null;
 		/*
 			Section object format
@@ -17,7 +24,7 @@ angular.module('courses').controller('CoursesController', ['$scope', '$rootScope
 					note.ObjectId
 				]
 			}
-		*/
+
 		$scope.availiableSections = [
 			{
                 section: '1',
@@ -28,12 +35,12 @@ angular.module('courses').controller('CoursesController', ['$scope', '$rootScope
             {
                 section: '3',
             },
-		];
+		];*/
 		// TODO: Get actual course object from backend using courseCode from stateParams
-		$scope.courseCode = $state.params.courseCode;
+		$scope.courseId = $state.params.courseId;
 
  		$scope.addCourse = function () {
-            $rootScope.$broadcast('add-course', {code: $scope.courseCode});
+            $rootScope.$broadcast('add-course', {code: $scope.courseId});
         };
     }
 ]);

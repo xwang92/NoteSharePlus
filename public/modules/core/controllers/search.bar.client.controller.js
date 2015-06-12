@@ -1,13 +1,22 @@
 'use strict';
 
-angular.module('core').controller('SearchBarController', ['$scope', '$rootScope', '$location','$state',
-	function($scope, $rootScope, $location, $state) {
+angular.module('core').controller('SearchBarController', ['$scope', '$rootScope', '$location','$state', 'Schools',
+	function($scope, $rootScope, $location, $state, Schools) {
         $scope.viewModel = {};
         $scope.viewModel.selectedCourse= null;
+
+        $scope.school = "something";
+
+        $scope.init = function(){
+            Schools.populateCoursesFromServer(function(courses){
+                $scope.availableCourses = courses;
+            });
+        };
+
         // TODO: make backend call to get availiable courses
         // OR, get courses on the fly during search
-        $scope.availableCourses = [
-            /*
+        /*$scope.availableCourses = [
+
                 Course object format
                 {    
                     _id: '<ObjectId>',
@@ -18,7 +27,7 @@ angular.module('core').controller('SearchBarController', ['$scope', '$rootScope'
                     school:  'school.ObjectId',
                     section: '[String]'
                 },
-            */
+
             {
                 name: 'Course 1',
                 code: 'CRS101',
@@ -34,11 +43,14 @@ angular.module('core').controller('SearchBarController', ['$scope', '$rootScope'
                 code: 'CRS103',
                 description: 'Course 3 content'
             },
-        ];
+        ];*/
 		// Function to go to course page
         $scope.viewCourse = function() {
             if($scope.viewModel.selectedCourse) {
-                $state.go('course', {courseCode: $scope.viewModel.selectedCourse.code});
+                //$state.go('course', {courseCode: $scope.viewModel.selectedCourse.code});
+                $state.go('course', {
+                    courseId: $scope.viewModel.selectedCourse._id
+                });
             }   
         };
 	}

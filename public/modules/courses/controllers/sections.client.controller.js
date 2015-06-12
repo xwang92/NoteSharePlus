@@ -1,7 +1,14 @@
 'use strict';
 
-angular.module('courses').controller('SectionsController', ['$scope', '$state',
-	function($scope, $state) {
+angular.module('courses').controller('SectionsController', ['$scope', '$state', 'Sections',
+	function($scope, $state, Sections) {
+
+        $scope.init = function(){
+            $scope.section = Sections.get({
+                sectionId: $state.params.sectionId
+            });
+	    };
+
 		/*
 			Note object format
 			{
@@ -28,25 +35,15 @@ angular.module('courses').controller('SectionsController', ['$scope', '$state',
 			    “section”: section.ObjectId
 			}
 		*/
-		// TODO: Get actual section numbers using state params
-		$scope.courseCode = $state.params.courseCode;
-		$scope.sectionNum = $state.params.sectionNum;
-		$scope.availiableLectures = [
-			{
-                number: '1',
-            },
-            {
-                number: '2',
-            },
-            {
-                number: '3',
-            },
-            {
-                number: '4',
-            },
-            {
-                number: '5',
-            },
-		];
+
+		$scope.courseId = $state.params.courseId;
+		$scope.sectionId = $state.params.sectionId;
+
+        $scope.uploadPage = function() {
+            $state.go('uploadPage', {
+                courseId: $scope.courseId,
+                sectionId: $scope.sectionId
+            });
+        };
     }
 ]);

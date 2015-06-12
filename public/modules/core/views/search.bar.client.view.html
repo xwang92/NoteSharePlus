@@ -1,6 +1,7 @@
-<div class="course_search" data-ng-controller="SearchBarController">
-	<input type="text" data-ng-model="viewModel.selectedCourse" data-typeahead="course as  course.code + ': ' + course.name for course in availableCourses | filter:$viewValue | limitTo:8" class="form-control" data-typeahead-editable="false">
-	<button type="button" data-ng-click="viewCourse()">
-	    View Course
-	</button>
+<div class="course_search" data-ng-controller="SearchBarController" data-ng-init="init()">
+    <input type="text" data-ng-model="viewModel.selectedCourse" data-typeahead="course as  course.code + ': ' + course.name for course in availableCourses | filter:$viewValue | limitTo:8" class="form-control" data-typeahead-editable="false">
+    <button type="button" data-ng-click="viewCourse()">
+        View Course
+    </button>
+    {{school}}
 </div>

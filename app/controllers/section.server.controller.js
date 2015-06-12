@@ -93,7 +93,7 @@ exports.create = function(req, res) {
                 if (!course) return res.status(400).send({
                     message: 'course not found'
                 });
-                course.sections.push(section._id);
+                course.sections.push(section);
                 course.save(function(err) {
                     if (err) {
                         return res.status(400).send({
