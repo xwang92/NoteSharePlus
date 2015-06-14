@@ -229,9 +229,6 @@ exports.addDocToNote = function(req, res){
  */
 exports.addImageToNote = function(req, res) {
 
-    //console.log('in add image');
-    //console.log(req.user._id);
-
     findAllID(req, res, function(school,course,section,note){
 
         console.log(school,course,section,note);
@@ -239,10 +236,21 @@ exports.addImageToNote = function(req, res) {
         var schoolName = school.name.replace(/\W/g, '');
         var courseCode = course.code.replace(/\W/g, '');
         var path = getFullPath('./uploads/' , schoolName, courseCode , section);
-        var filePath = path + '/' + req.files.file.name;
-        var thumbNailPath = path + '/thumbnail_' + req.files.file.name;
+        //var filePath = path + '/' + req.files.file.name;
+        //var thumbNailPath = path + '/thumbnail_' + req.files.file.name;
 
-        //console.log(req.files);
+        var fileArray = [];
+
+        console.log(req.files);
+
+        for(var file in req.files){
+            fileArray.push(file);
+        }
+
+        fileArray.sort();
+        console.log(fileArray);
+
+
         //console.log(filePath,thumbNailPath);
 
         // check image extension matches accepted list

@@ -4,9 +4,6 @@ angular.module('lectures').controller('LecturesController', ['$scope', '$rootSco
 	function($scope, $rootScope, $state, Lectures) {
 
         $scope.init = function(){
-            /*Lectures.getLectureById($state.params.lectureId, function(resLecture){
-                $scope.lecture = resLecture;
-            });*/
             updateLecture();
 	    };
 
