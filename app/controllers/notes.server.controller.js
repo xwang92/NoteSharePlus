@@ -235,38 +235,64 @@ exports.addImageToNote = function(req, res) {
 
         var schoolName = school.name.replace(/\W/g, '');
         var courseCode = course.code.replace(/\W/g, '');
+        // get full path creates /school/courseCode path if folders does not exist yet
         var path = getFullPath('./uploads/' , schoolName, courseCode , section);
-        //var filePath = path + '/' + req.files.file.name;
-        //var thumbNailPath = path + '/thumbnail_' + req.files.file.name;
-
-        var fileArray = [];
 
         console.log(req.files);
 
-        for(var file in req.files){
-            fileArray.push(file);
+        var file;
+        var fileArray = [];
+        var fileNameArray = [];
+        // sort name of files
+        for(file in req.files){
+            fileNameArray.push(file);
         }
-
-        fileArray.sort();
+        fileNameArray.sort();
+        //console.log('1');
+        //console.log(fileNameArray);
+        // populate file array by sorted names
+        while(fileNameArray.length > 0){
+            file = fileNameArray.shift();
+            console.log(req.files[file]);
+            fileArray.push(req.files[file]);
+        }
+        //console.log('2');
         console.log(fileArray);
 
+        // save images to disk
+        var thumbNail = true;
+        var filePath, thumbNailPath;
+        while(fileArray.length > 0){
+            file = fileArray.shift();
+            console.log("current file:");
+            console.log(file);
 
-        //console.log(filePath,thumbNailPath);
+            filePath = path + '/' + file.name;
+            if(thumbNail) thumbNailPath = path + '/thumbnail_' + file.name;
+            else thumbNailPath = -1;
 
-        // check image extension matches accepted list
-        var error = matchImgExtension(req.files.file.extension, req.files.file.path);
-        if(error){
-             return res.status(400).send({
-                 message: 'image type is not accepted'
-             });
-        }
-        // move from tmp to file path, resize and create thumbnail
-        moveFile_Resize_CreateThumbnail( req.files.file, filePath, thumbNailPath, res);
-        // push image and thumbnail
-        note.location.push(filePath);
-        note.thumbNail.push(thumbNailPath);
+            console.log("filePath" + filePath);
+            console.log("thumbNailPath" + thumbNailPath);
 
-        //console.log(note);
+            // check image extension matches accepted list
+            var error = matchImgExtension(file.extension, file.path);
+            if(error){
+                 return res.status(400).send({
+                     message: 'image type is not accepted'
+                 });
+            }
+            // move from tmp to file path, resize and create thumbnail
+            moveFile_Resize_CreateThumbnail( file, filePath, thumbNailPath, res);
+            // push image and thumbnail
+            note.location.push(filePath);
+            if(thumbNail) note.thumbNail = thumbNailPath;
+
+            // Only create thumbNail for first image
+            thumbNail = false
+            console.log(note);
+        };
+
+        console.log(note);
 
         note.save(function(err) {
             if (err) {
@@ -389,6 +415,8 @@ function resizeNote(filePath){
 }
 
 function create_thumbNail(filePath, thumbNailPath){
+    // return if thumbNailPath is empty. ie not first image
+    if(thumbNailPath == -1) return;
     gm(filePath)
     .resize(160, 160)
     .noProfile()

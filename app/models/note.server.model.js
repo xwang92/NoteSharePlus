@@ -43,6 +43,7 @@ var NoteSchema = new Schema({
     }],
     thumbNail: {
         type: String,
+        default: '',
         trim: true
     },
     tags: [{

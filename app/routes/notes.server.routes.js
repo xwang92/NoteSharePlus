@@ -24,7 +24,7 @@ module.exports = function(app) {
                 limit: {
                     filesize: 5242880 // 5MB
                 },
-                putSingleFilesInArray: true,
+                //putSingleFilesInArray: true,
                 onFileSizeLimit: function (file) {
                     fs.unlink('./' + file.path) // delete the partially written file
                     res.status(403).send({
