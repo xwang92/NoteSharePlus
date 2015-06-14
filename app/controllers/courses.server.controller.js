@@ -23,7 +23,7 @@ exports.read = function(req, res) {
  * @param req.user The user object.
  */
 exports.listBySchool = function(req, res, next) {
-    var schoolId = req.user.school;
+    var schoolId = req.query.school;
     var query = {};
     query.school = mongoose.Types.ObjectId(schoolId);
     if (schoolId){
@@ -34,7 +34,7 @@ exports.listBySchool = function(req, res, next) {
         });
     } else {
         return res.status(403).send({
-            message: 'User is registered to a school'
+            message: 'Please provide a valid school Id for course search'
         });
     }
 };
@@ -45,22 +45,29 @@ exports.listBySchool = function(req, res, next) {
  * @param req.user The user object.
  */
 exports.listByCode = function(req, res, next) {
-    var schoolId = req.user.school;
-    var query = {};
-    query.school = mongoose.Types.ObjectId(schoolId);
-    query.code = { "$regex": req.query.code, "$options": "i" };
-    console.log(query);
-    if (schoolId){
-        Course.find(query).exec(function(err, courses) {
-            if (err) return next(err);
-            if (!courses) return next(new Error('Failed to load courses with school ' + schoolId));
-            res.json(courses);
-        });
-    } else {
-        return res.status(403).send({
-            message: 'User is registered to a school'
-        });
+
+    if(req.query.code){
+
+        var schoolId = req.query.school;
+        var query = {};
+        query.school = mongoose.Types.ObjectId(schoolId);
+        query.code = { "$regex": req.query.code, "$options": "i" };
+        if (schoolId){
+            Course.find(query).exec(function(err, courses) {
+                if (err) return next(err);
+                if (!courses) return next(new Error('Failed to load courses with school ' + schoolId));
+                res.json(courses);
+            });
+        } else {
+            return res.status(403).send({
+                message: 'User is registered to a school'
+            });
+        }
+    }else{
+        next();
     }
+
+
 };
 
 
@@ -80,8 +87,8 @@ exports.addToUser = function(req, res, next){
 
     var user = req.user;
     var course = req.course;
-
-    console.log(user.courses);
+    var section_id = req.body.section;
+    var courseIndex = findUserProfileCourse(course._id, user.courses);
 
     // if course already exist send 202, else add course and send the course info as response
     if (user.courses.length >= 7){
@@ -89,30 +96,44 @@ exports.addToUser = function(req, res, next){
             message: 'User already have 7 courses. Should not be allowed to have more'
         });
     }
-    else if (user.courses.indexOf(course._id) != -1 ){
+    else if (courseIndex != -1 ){
         return res.status(202).send({
             message: 'Course Already Exist in User Profile'
         });
     }
     else {
-        user.courses.push(course._id);
-        // save the update made to the user.course array
-        user.save(function(err) {
-            if (err) {
-                return res.status(400).send({
-                    message: errorHandler.getErrorMessage(err)
-                });
+
+        Course.findById(course._id).exec(function(err, course) {
+            if (err) return next(err);
+            if (!course) return next(new Error('Failed to load course ' + course.name));
+
+            var user_course = {
+                name: course.name,
+                code: course.code,
+                courseId: course._id,
+                sectionId: section_id
             }
+
+            user.courses.push(user_course);
+            // save the update made to the user.course array
+            user.save(function(err) {
+                if (err) {
+                    return res.status(400).send({
+                        message: errorHandler.getErrorMessage(err)
+                    });
+                }
+            });
+            // send courses added as the response
+            res.json(user.courses);
         });
-        // send courses added as the response
-        res.json(req.course);
     }
 };
 
 exports.removeFromUser = function(req, res, next){
 
     var user = req.user;
-    var index_pos = user.courses.indexOf(req.course._id);
+    //var index_pos = user.courses.indexOf(req.course._id);
+    var index_pos = findUserProfileCourse(req.course._id, user.courses);
 
     if ( index_pos != -1 ){
 
@@ -125,7 +146,7 @@ exports.removeFromUser = function(req, res, next){
             }
         });
         // send courses added as the response
-        res.json(req.course);
+        res.json(user.courses);
     }
     else {
         return res.status(400).send({
@@ -134,6 +155,18 @@ exports.removeFromUser = function(req, res, next){
     }
 
 }
+
+function findUserProfileCourse(course_id, user_courses){
+
+    var user_course;
+    for(var i =0; i < user_courses.length; i++){
+        if(user_courses[i].courseId.toString() == course_id.toString() ){
+            return i;
+        }
+    }
+
+    return -1;
+};
 
 /**
  * Checks if the user has authorization to access this course
@@ -148,7 +181,7 @@ exports.hasAuthorization = function(req, res, next) {
         next();
     } else {
         return res.status(403).send({
-            message: 'User is not authorized'
+            message: 'Course school id does not match user school id'
         });
     }
 };
@@ -200,6 +233,7 @@ exports.addCourse = function(course, school, res, callback){
     });
 };
 
+
 exports.create = function(req, res) {
     var course = new Course(req.body);
 
@@ -211,6 +245,22 @@ exports.create = function(req, res) {
         } else {
             res.json(course);
         }
+    });
+};
+
+
+exports.remove = function(req , res ){
+
+    var course = req.course;
+
+    course.remove(function(err) {
+        if (err) {
+			return res.status(400).send({
+				message: errorHandler.getErrorMessage(err)
+			});
+		} else {
+			res.json(course);
+		}
     });
 };
 

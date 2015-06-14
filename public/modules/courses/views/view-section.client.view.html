@@ -1,6 +1,13 @@
-<div class="section_outline" data-ng-controller="SectionsController">
-	section view
-	<div ng-repeat="lecture in availiableLectures">
-		<a ui-sref="lecture({ courseCode: courseCode, sectionNum: sectionNum, lectureNum: lecture.number })">lecture {{lecture.number}}</a>
+<div class="section_outline" data-ng-controller="SectionsController" data-ng-init="init()">
+	section {{section.year}}  {{section.term}}  {{section.section}}
+    <button type="button" data-ng-click="addSection()"> Add Section </button>
+    <button type="button" data-ng-click="removeSection()"> Remove Section </button>
+	<div ng-repeat="lecture in section.notes">
+		<a ui-sref="lecture({ courseId: courseId, sectionId: sectionId, lectureId: lecture._id })">
+            {{lecture.date}} {{lecture.noteType}} {{lecture.fileType}} {{lecture.name}}
+        </a>
 	</div>
+    <button type="button" data-ng-click="uploadPage()">
+        Upload Note
+    </button>
 </div>

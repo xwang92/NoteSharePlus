@@ -97,8 +97,6 @@ var UserSchema = new Schema({
         ref: 'School'
     },
     courses: [{
-        type: Schema.ObjectId,
-        ref: 'Course'
     }],
     ratedNotes: [{
         type: Schema.ObjectId,

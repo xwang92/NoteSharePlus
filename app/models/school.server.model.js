@@ -21,7 +21,8 @@ var SchoolSchema = new Schema({
     domain: {
         type: String,
         trim: true,
-        default: ''
+        required: 'School domain should not be blank',
+        unique: true
     }
 });
 

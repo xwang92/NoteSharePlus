@@ -13,17 +13,13 @@ var NoteSchema = new Schema({
         required: 'number cannot cannot be blank'
     },
     noteType:{
-        type: [{
-			type: String,
-			enum: ['Lecture', 'Tutorial', 'HomeWork', 'Exam', 'Other']
-		}],
+		type: String,
+		enum: ['Lecture', 'Tutorial', 'HomeWork', 'Exam', 'Other'],
 		required: 'note type cannot be blank'
     },
     fileType: {
-        type: [{
-			type: String,
-			enum: ['Image', 'Doc']
-		}],
+		type: String,
+		enum: ['Image', 'Doc'],
         required: 'file type cannot be blank'
     },
     number: {
@@ -45,17 +41,19 @@ var NoteSchema = new Schema({
         type: String,
         trim: true
     }],
-    thumbNail: [{
+    thumbNail: {
         type: String,
+        default: '',
         trim: true
-    }],
+    },
     tags: [{
         type: String,
         trim: true
     }],
     author: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: 'Note needs an author'
     },
     section: {
         type: Schema.ObjectId,
@@ -64,6 +62,6 @@ var NoteSchema = new Schema({
     }
 });
 
-NoteSchema.index({noteType: 1, date: 1, name: 1}, {unique: true});
+NoteSchema.index({noteType: 1, date: 1, name: 1, section: 1}, {unique: true});
 
 mongoose.model('Note', NoteSchema);

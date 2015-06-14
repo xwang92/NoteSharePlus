@@ -13,10 +13,8 @@ var SectionSchema = new Schema({
         required: 'section year cannot be blank'
     },
     term:{
-        type: [{
-			type: String,
-			enum: ['Winter', 'Fall']
-		}],
+		type: String,
+        enum: ['Winter', 'Fall'],
         required: 'section term cannot be blank'
     },
     section: {
@@ -29,12 +27,9 @@ var SectionSchema = new Schema({
         ref: 'Course',
         required: 'Course cannot be blank'
     },
-    notes: [{
-        type: Schema.ObjectId,
-        ref: 'Note'
-    }]
+    notes: [{}]
 });
 
-SectionSchema.index({year: 1, term: 1, section: 1}, {unique: true});
+SectionSchema.index({year: 1, term: 1, section: 1, course: 1}, {unique: true});
 
 mongoose.model('Section', SectionSchema);

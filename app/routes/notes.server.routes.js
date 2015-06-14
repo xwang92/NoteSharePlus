@@ -24,6 +24,7 @@ module.exports = function(app) {
                 limit: {
                     filesize: 5242880 // 5MB
                 },
+                //putSingleFilesInArray: true,
                 onFileSizeLimit: function (file) {
                     fs.unlink('./' + file.path) // delete the partially written file
                     res.status(403).send({
@@ -53,11 +54,12 @@ module.exports = function(app) {
         .put(users.requiresLogin, notes.hasAuthorization, notes.update)
         .delete(users.requiresLogin, notes.delete);
 
-    app.route('/notes/remove_tags/:noteId')
-        .put(users.requiresLogin, notes.removeTags);
+    //app.route('/notes/remove_tags/:noteId')
+      //  .put(users.requiresLogin, notes.removeTags);
 
-    app.route('/notes/add_tags/:noteId')
-        .put(users.requiresLogin, notes.addTags);
+    app.route('/notes/tags/:noteId')
+        .put(users.requiresLogin, notes.addTags)
+        .delete(users.requiresLogin, notes.removeTags);
 
     app.route('/notes/ratings/:noteId')
         .put(users.requiresLogin, users.haveNotRated, notes.addRating);

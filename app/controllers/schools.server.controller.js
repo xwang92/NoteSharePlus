@@ -33,10 +33,14 @@ exports.schoolByName = function(req, res, next) {
     var schoolName = req.query.name;
     if (schoolName){
         var query = {};
-        query.name = schoolName;
-        School.findOne(query).exec(function(err, school) {
+        query.name = { "$regex": schoolName, "$options": "i" };
+        School.find(query).exec(function(err, school) {
             if (err) return next(err);
-            if (!school) return next(new Error('Failed to load school ' + name));
+            if (school.length == 0) {
+                return res.status(400).send({
+                    message: 'No matching school found'
+                });
+            }
             res.json(school);
         });
     } else {
@@ -100,8 +104,23 @@ exports.hasAuthorization = function(req, res, next) {
 exports.schoolById = function(req, res, next, schoolId) {
     School.findById(schoolId).exec(function(err, school) {
         if (err) return next(err);
-        if (!school) return next(new Error('Failed to load school ' + name));
+        if (!school) return next(new Error('Failed to load school ' + schoolId));
         req.school = school;
         next();
+    });
+};
+
+exports.remove = function(req , res ){
+
+    var school = req.school;
+
+    school.remove(function(err) {
+        if (err) {
+			return res.status(400).send({
+				message: errorHandler.getErrorMessage(err)
+			});
+		} else {
+			res.json(school);
+		}
     });
 };

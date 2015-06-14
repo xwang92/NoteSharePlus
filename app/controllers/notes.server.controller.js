@@ -20,11 +20,14 @@ var _ = require('lodash'),
  * @param req.query.author the ID of an user, requested by the user
  */
 exports.fromUser = function(req, res, next) {
-    var authorId = req.query.author;
-    var query = {};
-    console.log("author ID: " + authorId);
-    query.author = mongoose.Types.ObjectId(authorId);
-    if (authorId) {
+
+    if (req.query.author) {
+
+        var authorId = req.query.author;
+        var query = {};
+        console.log("author ID: " + authorId);
+        query.author = mongoose.Types.ObjectId(authorId);
+
         Note.find(query).populate('author').populate('course').exec(function(err, note) {
             if (err) return next(err);
             if (!note) return next(new Error('Failed to load note with id ' + authorId));
@@ -41,11 +44,14 @@ exports.fromUser = function(req, res, next) {
  * @param req.user.course the ID of a course, requested by the user
  */
 exports.fromSection = function(req, res, next) {
-    var sectionId = req.query.section;
-    var query = {};
-    console.log("section ID: " + sectionId);
-    query.section = mongoose.Types.ObjectId(sectionId);
-    if (sectionId) {
+
+    if (req.query.section) {
+
+        var sectionId = req.query.section;
+        var query = {};
+        console.log("section ID: " + sectionId);
+        query.section = mongoose.Types.ObjectId(sectionId);
+
         Note.find(query).populate('section').populate('author').exec(function(err, note) {
             if (err) return next(err);
             if (!note) return next(new Error('Failed to load note with id ' + sectionId));
@@ -98,14 +104,14 @@ exports.create = function(req, res) {
     var note = new Note(req.body);
     note.author = req.user._id;
 
+    console.log(note);
+
     Section.findById(note.section).exec(function(err, section) {
         if (err) return res.status(400).send();
         if (!section) return res.status(400).send({
             message: 'section not found'
         });
     });
-
-    console.log(note);
 
     note.save(function(err) {
         if (err) {
@@ -118,7 +124,7 @@ exports.create = function(req, res) {
                 if (!section) return res.status(400).send({
                     message: 'section not found'
                 });
-                section.notes.push(note._id);
+                section.notes.push(note);
                 section.save(function(err) {
                     if (err) {
                         return res.status(400).send({
@@ -223,36 +229,70 @@ exports.addDocToNote = function(req, res){
  */
 exports.addImageToNote = function(req, res) {
 
-    //console.log('in add image');
-    //console.log(req.user._id);
-
     findAllID(req, res, function(school,course,section,note){
 
         console.log(school,course,section,note);
 
         var schoolName = school.name.replace(/\W/g, '');
         var courseCode = course.code.replace(/\W/g, '');
+        // get full path creates /school/courseCode path if folders does not exist yet
         var path = getFullPath('./uploads/' , schoolName, courseCode , section);
-        var filePath = path + '/' + req.files.file.name;
-        var thumbNailPath = path + '/thumbnail_' + req.files.file.name;
 
-        //console.log(req.files);
-        //console.log(filePath,thumbNailPath);
+        console.log(req.files);
 
-        // check image extension matches accepted list
-        var error = matchImgExtension(req.files.file.extension, req.files.file.path);
-        if(error){
-             return res.status(400).send({
-                 message: 'image type is not accepted'
-             });
+        var file;
+        var fileArray = [];
+        var fileNameArray = [];
+        // sort name of files
+        for(file in req.files){
+            fileNameArray.push(file);
         }
-        // move from tmp to file path, resize and create thumbnail
-        moveFile_Resize_CreateThumbnail( req.files.file, filePath, thumbNailPath, res);
-        // push image and thumbnail
-        note.location.push(filePath);
-        note.thumbNail.push(thumbNailPath);
+        fileNameArray.sort();
+        //console.log('1');
+        //console.log(fileNameArray);
+        // populate file array by sorted names
+        while(fileNameArray.length > 0){
+            file = fileNameArray.shift();
+            console.log(req.files[file]);
+            fileArray.push(req.files[file]);
+        }
+        //console.log('2');
+        console.log(fileArray);
 
-        //console.log(note);
+        // save images to disk
+        var thumbNail = true;
+        var filePath, thumbNailPath;
+        while(fileArray.length > 0){
+            file = fileArray.shift();
+            console.log("current file:");
+            console.log(file);
+
+            filePath = path + '/' + file.name;
+            if(thumbNail) thumbNailPath = path + '/thumbnail_' + file.name;
+            else thumbNailPath = -1;
+
+            console.log("filePath" + filePath);
+            console.log("thumbNailPath" + thumbNailPath);
+
+            // check image extension matches accepted list
+            var error = matchImgExtension(file.extension, file.path);
+            if(error){
+                 return res.status(400).send({
+                     message: 'image type is not accepted'
+                 });
+            }
+            // move from tmp to file path, resize and create thumbnail
+            moveFile_Resize_CreateThumbnail( file, filePath, thumbNailPath, res);
+            // push image and thumbnail
+            note.location.push(filePath);
+            if(thumbNail) note.thumbNail = thumbNailPath;
+
+            // Only create thumbNail for first image
+            thumbNail = false
+            console.log(note);
+        };
+
+        console.log(note);
 
         note.save(function(err) {
             if (err) {
@@ -375,6 +415,8 @@ function resizeNote(filePath){
 }
 
 function create_thumbNail(filePath, thumbNailPath){
+    // return if thumbNailPath is empty. ie not first image
+    if(thumbNailPath == -1) return;
     gm(filePath)
     .resize(160, 160)
     .noProfile()
@@ -432,6 +474,7 @@ exports.removeTags = function(req, res) {
     var newTags = req.body.tags;
     newTags = _.difference(note.tags, [newTags]);
     note.tags = newTags;
+
     note.save(function(err) {
         if (err) {
             return res.status(400).send({
@@ -454,8 +497,6 @@ exports.addTags = function(req, res) {
     var newTags = req.body.tags;
     newTags = _.union( [newTags] , note.tags );
     note.tags = newTags;
-
-    console.log(newTags);
 
     note.save(function(err) {
         if (err) {

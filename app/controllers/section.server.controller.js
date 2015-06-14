@@ -19,28 +19,34 @@ exports.read = function(req, res) {
 };
 
 
-
 /**
  * Lists all sections available by course
  *
  */
 exports.listByCourse = function(req, res, next) {
 
-    var courseId = req.course._id;
-    var query = {};
-    query.course = mongoose.Types.ObjectId(courseId);
+    if(req.query.course){
+        var courseId = req.query.course;
+        var query = {};
+        query.course = mongoose.Types.ObjectId(courseId);
 
-    if (courseId){
-        Section.find(query).exec(function(err, sections) {
-            if (err) return next(err);
-            if (!sections) return next(new Error('Failed to load courses with course ' + courseId));
-            res.json(sections);
-        });
-    } else {
-        return res.status(403).send({
-            message: 'No section under this course'
+        if (courseId){
+            Section.find(query).exec(function(err, sections) {
+                if (err) return next(err);
+                if (!sections) return next(new Error('Failed to load courses with course ' + courseId));
+                res.json(sections);
+            });
+        } else {
+            return res.status(403).send({
+                message: 'No section under this course'
+            });
+        }
+    }else{
+        return res.status(400).send({
+        	message: 'Need a valid course Id to get sections under a course'
         });
     }
+
 };
 
 
@@ -57,58 +63,8 @@ exports.sectionById = function(req, res, next, id) {
     });
 };
 
-/*exports.create = function(req, res) {
-      var section = new Section(req.body);
-
-      section.save(function(err) {
-          if (err) {
-              return res.status(400).send({
-                  message: errorHandler.getErrorMessage(err)
-              });
-          } else {
-              res.json(section);
-          }
-      });
-  };*/
-
-
-/**
- * addCourse function used in the courses/update REST call
- *
-
-exports.addSection = function(course, school, res, callback){
-
-    // section json object with all course information
-    var sectionToAdd = new Section({
-        name: section.namee,
-        code: section.code,
-        term: section.term,
-        school: school._id
-    });
-
-    // setup query object
-    var query = {};
-    query.name = course.name;
-    query.code = course.code;
-
-    // if the course is not in database, add it in
-    // else just return directly
-    Course.find(query).exec(function(err, courses) {
-        if (err) return next(err);
-        if (!courses) {
-            saveCourse(courseToAdd, function(saved){
-                callback();
-                console.log('added course' + courseToAdd);
-            });
-        }
-        else
-            callback();
-    });
-};*/
-
 exports.deleteSection = function(req, res){
 
-    console.log("in delete")
     var section = req.section;
 
     section.remove(function(err) {
@@ -122,10 +78,8 @@ exports.deleteSection = function(req, res){
     });
 }
 
-
 exports.create = function(req, res) {
 
-    console.log(req.body);
     var section = new Section(req.body);
 
     section.save(function(err) {
@@ -139,7 +93,7 @@ exports.create = function(req, res) {
                 if (!course) return res.status(400).send({
                     message: 'course not found'
                 });
-                course.sections.push(section._id);
+                course.sections.push(section);
                 course.save(function(err) {
                     if (err) {
                         return res.status(400).send({
