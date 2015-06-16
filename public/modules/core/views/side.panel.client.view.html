@@ -11,7 +11,7 @@
         <li class="sidebar-title"><span>My Courses</span></li>
         <span ng-repeat="course in courses">
 	        <li class="sidebar-list">
-	          <a ui-sref="course({ courseCode: course.code })">{{course.code}} 
+	          <a ui-sref="course({ courseId: course._id })">{{course.code}} 
 	          	<i type="button" style="margin-left: 100px;" class="glyphicon" data-ng-click="removeSection($index)">X</i>
 	          </a>
         	</li>            
