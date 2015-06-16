@@ -1,4 +1,4 @@
-<div class="container" data-ng-controller="HeaderController">
+<!-- <div class="container" data-ng-controller="HeaderController">
 	<div class="navbar-header">
 		<button class="navbar-toggle" type="button" data-ng-click="toggleCollapsibleMenu()">
 			<span class="sr-only">Toggle navigation</span>
@@ -23,6 +23,8 @@
 				<a ng-switch-default href="/#!/{{item.link}}" data-ng-bind="item.title"></a>
 			</li>
 		</ul>
+		<span data-ng-include="'/modules/core/views/search.bar.client.view.html'"></span>
+
 		<ul class="nav navbar-nav navbar-right" data-ng-hide="authentication.user">
 			<li ui-route="/signup" ng-class="{active: $uiRoute}">
 				<a href="/#!/signup">Sign Up</a>
@@ -55,4 +57,70 @@
 			</li>
 		</ul>
 	</nav>
+</div> -->
+
+
+<!-- Header Bar -->
+<div data-ng-controller="HeaderController" class="row header">
+  <div class="col-xs-12">
+    <div class="user pull-right">
+      <div class="item dropdown">
+        <a href="#" class="dropdown-toggle">
+          <img src="modules/core/img/avatar.jpg">
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right">
+          <li class="dropdown-header">
+            <span data-ng-bind="authentication.user.displayName"></span>
+          </li>
+          <li class="divider"></li>
+          <li class="link">
+            <a href="/#!/settings/profile">
+              Profile
+            </a>
+          </li>
+          <li class="link">
+            <a href="/#!/settings/accounts">
+              Manage Social Accounts
+            </a>
+          </li>
+          <li class="link" data-ng-show="authentication.user.provider === 'local'">
+            <a href="/#!/settings/password">
+              Change Password
+            </a>
+          </li>
+          <li class="divider"></li>
+          <li class="link">
+            <a href="/auth/signout">
+              Logout
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="item dropdown">
+       <a href="#" class="dropdown-toggle">
+          <i class="fa fa-bell-o"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right">
+          <li class="dropdown-header">
+            Notifications
+          </li>
+          <li class="divider"></li>
+          <li>
+            <a href="#">Server Down!</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="pull-right" data-ng-include="'/modules/core/views/search.bar.client.view.html'"></div>
+
+    <div class="meta">
+      <div class="page">
+        Dashboard
+      </div>
+      <div class="breadcrumb-links">
+        Home / Dashboard
+      </div>
+    </div>
+  </div>
 </div>
+<!-- End Header Bar -->
