@@ -44,16 +44,17 @@
 </head>
 
 <body class="ng-cloak">
-	<header data-ng-include="'/modules/core/views/header.client.view.html'" class="navbar navbar-fixed-top"></header>
-
-	<section data-ng-include="'/modules/core/views/side.panel.client.view.html'"></section>
-
-	<section class="content">
-		<section class="container">
-			{% block content %}{% endblock %}
-		</section>
-	</section>
-
+	<div data-ng-controller="MainController" id="page-wrapper" ng-class="{'open': toggle}" ng-cloak>
+		<div data-ng-include="'/modules/core/views/side.panel.client.view.html'"></div>
+		<div class="content-wrapper">
+			<div class="page-content">
+				<header data-ng-include="'/modules/core/views/header.client.view.html'"></header>
+				<div>
+					{% block content %}{% endblock %}
+				</div>
+			</div>
+		</div>
+	</div>
 	<!--Embedding The User Object-->
 	<script type="text/javascript">
 		var user = {{ user | json | safe }};

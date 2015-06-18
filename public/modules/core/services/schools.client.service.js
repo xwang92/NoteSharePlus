@@ -10,7 +10,7 @@ angular.module('core').factory('Schools', ['$http',
         // JSON object, instance of a school in backend
         var _school = {
             name: 'University of Toronto',
-            _id: '5549b9b6e74b26801780a9c7'
+            _id: '557e5aefa6bff94b4a9cd859'
         };
 
 	    var _courses = [];

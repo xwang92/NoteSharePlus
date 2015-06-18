@@ -1,7 +1,38 @@
-<div class="course_accordion" data-ng-controller="CourseAccordionController" data-course="course" data-ng-init="init()">
-    <div class"course_list" ng-repeat="course in courses">
-    	<a ui-sref="course({ courseCode: course.code })">
-            {{course.code}}
-    	</a>
+<!-- Sidebar -->
+<div data-ng-controller="CourseAccordionController" data-ng-init="init()">
+    <div  id="sidebar-wrapper">
+      <ul class="sidebar">
+        <li class="sidebar-main">
+          <a ng-click="toggleSidebar()">
+            Note4Share
+            <span class="menu-icon glyphicon glyphicon-transfer"></span>
+          </a>
+        </li>
+        <li class="sidebar-title"><span>My Courses</span></li>
+        <span ng-repeat="course in courses">
+	        <li class="sidebar-list">
+	          <a ui-sref="course({ courseId: course._id })">{{course.code}} 
+	          	<i type="button" style="margin-left: 100px;" class="glyphicon" data-ng-click="removeSection($index)">X</i>
+	          </a>
+        	</li>            
+        </span>
+      </ul>
+      <div class="sidebar-footer">
+        <div class="col-xs-4">
+          <a href="https://github.com/rdash/rdash-angular" target="_blank">
+            Github
+          </a>
+        </div>
+        <div class="col-xs-4">
+          <a href="https://github.com/rdash/rdash-angular/README.md" target="_blank">
+            About
+          </a>
+        </div>
+        <div class="col-xs-4">
+          <a href="#">
+            Support
+          </a>
+        </div>
+      </div>
     </div>
 </div>
